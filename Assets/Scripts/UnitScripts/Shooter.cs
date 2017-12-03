@@ -10,13 +10,11 @@ namespace UnitScripts
         
         public void Fire(float force)
         {
-            // Create an instance of the shell and store a reference to it's rigidbody.
+            // Create an instance of the shell and 
+            // set the shell's velocity to the launch force in the fire position's forward direction.
             var shellInstance = Instantiate(_shell, _fireTransform.position, _fireTransform.rotation);
-
-            // Set the shell's velocity to the launch force in the fire position's forward direction.
             shellInstance.velocity = force * _fireTransform.forward;
 
-            // Change the clip to the firing clip and play it.
             _shootingAudio.Play();
         }
     }

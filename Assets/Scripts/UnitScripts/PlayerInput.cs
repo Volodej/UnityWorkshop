@@ -19,9 +19,6 @@ namespace UnitScripts
         
         private void Update()
         {
-            if (!Input.anyKey)
-                return;
-
             ApplyMovement();
             ApplyTurn();
             ApplyAim();
@@ -63,7 +60,7 @@ namespace UnitScripts
             if (Input.GetKeyDown(KeyCode.Space))
                 _shootingCharger.StartShotCharging();
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyUp(KeyCode.Space))
                 _shootingCharger.EndShotCharging();
         }
     }

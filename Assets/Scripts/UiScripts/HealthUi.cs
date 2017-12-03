@@ -20,8 +20,7 @@ namespace UiScripts
         private void Start()
         {
             var healthStream = GetComponent<UnitHealth>().HealthPercentageStream;
-            healthStream.Subscribe(SetHealth);
-            healthStream.DoOnCompleted(() => gameObject.SetActive(false));
+            healthStream.Subscribe(SetHealth, () => _slider.gameObject.SetActive(false));
         }
 
         private void SetHealth(float value)

@@ -9,20 +9,21 @@ namespace UnitScripts
     {
         #region Prepared
 
-        public IObservable<float> HealthPercentageStream { get; private set; }
+        public UniRx.IObservable<float> HealthPercentageStream { get; private set; }
 
-        private ReactiveProperty<float> _health;
+        private BehaviorSubject<float> _health;
 
         [SerializeField] private float _startingHealth = 100f;              // The amount of health each tank starts with.
-        [SerializeField] private float _deathColorFogging = 0.7f;           // Unit will be darkening for this value after death.
+        [SerializeField] private float _deathColorFogging = 0.4f;           // Unit will be darkening for this value after death.
         [SerializeField] private Explosion _deathExplosion;                 // Explosion that will be created after unit death.
 
         #endregion
 
         private void Awake()
         {
-            _health = new ReactiveProperty<float>(_startingHealth);
+            _health = new BehaviorSubject<float>(_startingHealth);
             _health.DoOnCompleted(OnDeath);
+            _health.Subscribe(_ => { }, OnDeath);
             HealthPercentageStream = _health.Select(currentHealth => currentHealth / _startingHealth);
         }
 
@@ -30,10 +31,12 @@ namespace UnitScripts
         {
             // Calculate new health (not less than 0)
             var newHealth = _health.Value - amount;
-            _health.Value = Mathf.Max(0, newHealth);
+            _health.OnNext(Mathf.Max(0, newHealth));
 
-            if (newHealth <= 0)
-                _health.Dispose();
+            if (!(newHealth <= 0))
+                return;
+
+            _health.OnCompleted();
         }
 
         private void OnDeath()

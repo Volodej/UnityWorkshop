@@ -57,7 +57,7 @@ namespace UnitScripts
 
         private void Start()
         {
-            GetComponent<UnitHealth>().HealthPercentageStream.DoOnCompleted(() => enabled = false);
+            GetComponent<UnitHealth>().HealthPercentageStream.Subscribe(_ => { }, () => enabled = false);
         }
         
         public void Move(float targetFactor)
