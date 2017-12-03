@@ -1,5 +1,6 @@
 ﻿using System;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using Tuple = Smooth.Algebraics.Tuple;
 
@@ -60,12 +61,14 @@ namespace UnitScripts
 
         public void StartShotCharging()
         {
-            _chargingStream.OnNext(true);
+            if (enabled)
+                _chargingStream.OnNext(true);
         }
 
         public void EndShotCharging()
         {
-            _chargingStream.OnNext(false);
+            if (enabled)
+                _chargingStream.OnNext(false);
         }
 
         private void Start()
@@ -108,6 +111,15 @@ namespace UnitScripts
                 .StartWith(0)
                 .Subscribe(_chargingForce);
 
+            // Subscribe for tank death - disable charging and set component off
+            GetComponent<UnitHealth>().HealthPercentageStream
+                .Subscribe(
+                    f => { },
+                    () =>
+                    {
+                        _chargingStream.OnNext(false);
+                        enabled = false;
+                    });
         }
 
         private ChargingFrameData GetCurrentChargingState(ChargingFrameData lastData, float frameTime, bool currentlyCharging)
