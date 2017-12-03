@@ -1,9 +1,9 @@
-﻿using Interfaces;
+﻿using UniRx;
 using UnityEngine;
 
 namespace UnitScripts
 {
-    public sealed class TankMover : MonoBehaviour, IMovable
+    public sealed class TankMover : MonoBehaviour
     {
         #region Prepared
 
@@ -54,6 +54,11 @@ namespace UnitScripts
         }
 
         #endregion
+
+        private void Start()
+        {
+            GetComponent<UnitHealth>().HealthPercentageStream.DoOnCompleted(() => enabled = false);
+        }
         
         public void Move(float targetFactor)
         {

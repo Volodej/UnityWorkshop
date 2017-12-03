@@ -1,5 +1,4 @@
-﻿using Interfaces;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UnitScripts
 {
@@ -7,20 +6,26 @@ namespace UnitScripts
     {
         #region Prepared
 
-        private IMovable _mover;
-        private IAimable _aimer;
+        private TankMover _mover;
+        private Aimer _aimer;
+        private ShootingCharger _shootingCharger;
 
         private void Awake()
         {
-            _mover = GetComponent<IMovable>();
-            _aimer = GetComponent<IAimable>();
+            _mover = GetComponent<TankMover>();
+            _aimer = GetComponent<Aimer>();
+            _shootingCharger = GetComponent<ShootingCharger>();
         }
         
         private void Update()
         {
+            if (!Input.anyKey)
+                return;
+
             ApplyMovement();
             ApplyTurn();
             ApplyAim();
+            ApplyShooting();
         }
 
         #endregion
@@ -50,6 +55,16 @@ namespace UnitScripts
             var aimRight = Input.GetKey(KeyCode.RightArrow) ? 1 : 0;
             var aimFactor = aimRight - aimLeft;
             _aimer.Aim(aimFactor);
+        }
+
+        private void ApplyShooting()
+        {
+            // Get user input to fire shell from tank
+            if (Input.GetKeyDown(KeyCode.Space))
+                _shootingCharger.StartShotCharging();
+
+            if (Input.GetKeyDown(KeyCode.Space))
+                _shootingCharger.EndShotCharging();
         }
     }
 }
