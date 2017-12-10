@@ -12,19 +12,11 @@ namespace UiScripts
 
         private void Start()
         {
-            GetComponent<Aimer>().AimRotation
-                .Subscribe(SetRotation);
-
-            GetComponent<ShootingCharger>().ChargingForceStream
-                .Subscribe(force => _aimSlider.value = force);
         }
 
         private void SetRotation(float angle)
         {
             // Set rotation for slider by Z axis.
-            var currentRotation = _sliderRoot.localRotation.eulerAngles;
-            var newRotation = new Vector3(currentRotation.x, currentRotation.y, -angle);
-            _sliderRoot.localRotation = Quaternion.Euler(newRotation);
         }
     }
 }

@@ -63,35 +63,21 @@ namespace UnitScripts
         public void Move(float targetFactor)
         {
             // Set target value for tank movement factor
-            _targetSpeedFactor = targetFactor;
         }
 
         public void Turn(float targetFactor)
         {
             // Set value for tank turn factor
-            _currentTurnFactor = targetFactor;
         }
 
         public void Disable()
         {
             // Disable physics after unit destruction
-            _rigidbody.isKinematic = true;
-            enabled = false;
         }
 
         private void UpdateEngineAudio()
         {
             // Play the correct audio clip based on whether or not the tank is moving and what audio is currently playing.
-            var correctAudio = (Mathf.Abs(_currentTurnFactor) < 0.1f && Mathf.Abs(_currentSpeedFactor) < 0.1f)
-                ? _engineIdling
-                : _engineDriving;
-
-            if (_movementAudioSource.clip != correctAudio)
-            {
-                _movementAudioSource.clip = correctAudio;
-                _movementAudioSource.pitch = Random.Range(_originalPitch - _pitchRange, _originalPitch + _pitchRange);
-                _movementAudioSource.Play();
-            }
         }
 
         private void FixedUpdate()
@@ -104,16 +90,11 @@ namespace UnitScripts
         private void Move()
         {
             // Adjust the position of the tank based on the player's input.
-            var movement = transform.forward * _currentSpeedFactor * _maxMovementSpeed * Time.fixedDeltaTime;
-            _rigidbody.MovePosition(_rigidbody.position + movement);
         }
 
         private void Turn()
         {
             // Adjust the rotation of the tank based on the player's input.
-            var turn = _currentTurnFactor * _turnSpeed * Time.fixedDeltaTime;
-            var turnRotation = Quaternion.Euler(0f, turn, 0f);
-            _rigidbody.MoveRotation(_rigidbody.rotation * turnRotation);
         }
     }
 }

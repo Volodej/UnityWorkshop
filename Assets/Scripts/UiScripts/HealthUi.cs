@@ -19,14 +19,10 @@ namespace UiScripts
 
         private void Start()
         {
-            var healthStream = GetComponent<UnitHealth>().HealthPercentageStream;
-            healthStream.Subscribe(SetHealth, () => _slider.gameObject.SetActive(false));
         }
 
         private void SetHealth(float value)
         {
-            _slider.value = value;
-            _fillImage.color = Color.Lerp(_zeroHealthColor, _fullHealthColor, value);
         }
     }
 }

@@ -61,96 +61,40 @@ namespace UnitScripts
 
         public void StartShotCharging()
         {
-            if (enabled)
-                _chargingStream.OnNext(true);
         }
 
         public void EndShotCharging()
         {
-            if (enabled)
-                _chargingStream.OnNext(false);
         }
 
         private void Start()
         {
             // State stream
-            var chargingStateStream = Observable.EveryUpdate()
-                .Select(_ => Time.deltaTime)
-                .CombineLatest(_chargingStream.StartWith(false), Tuple.Create)
-                .Scan(ChargingFrameData.NotCharging(),
-                    (lastData, timeAndIsCharging) =>
-                        GetCurrentChargingState(lastData, timeAndIsCharging.Item1, timeAndIsCharging.Item2));
             
             // Start playing charging audio on start of charging.
-            chargingStateStream
-                .Where(data => data.ChargingState == ChargingState.StartCharging)
-                .Subscribe(_ => PlayChargingAudio());
 
             // And stop playing when charging is finished.
-            chargingStateStream
-                .Where(data => data.ChargingState == ChargingState.StopCharging)
-                .Subscribe(_ => StopChargingAudio());
 
             // Calculate shooting force and fire when charging is finished.
-            var shooter = GetComponent<Shooter>();
-            chargingStateStream
-                .Where(data => data.ChargingState == ChargingState.StopCharging)
-                .Select(data => CalculateChargingForce(data.ChargingTime))
-                .Select(chargeForce => Mathf.Min(chargeForce, _maxLaunchForce))
-                .Subscribe(chargeForce => shooter.Fire(chargeForce));
 
             // Stop charging when charge at maximum value.
-            chargingStateStream
-                .Where(data => data.ChargingState == ChargingState.ContinueCharging && data.ChargingTime > _maxChargeTime)
-                .Subscribe(_ => _chargingStream.OnNext(false));
 
             // Create stream with current charge force and subscribe _chargingForce stream for this events.
-            chargingStateStream
-                .Select(data => data.ChargingState == ChargingState.ContinueCharging ? data.ChargingTime : 0f)
-                .Select(CalculateChargingForce)
-                .StartWith(0)
-                .Subscribe(_chargingForce);
 
             // Subscribe for tank death - disable charging and set component off
-            GetComponent<UnitHealth>().HealthPercentageStream
-                .Subscribe(
-                    f => { },
-                    () =>
-                    {
-                        _chargingStream.OnNext(false);
-                        enabled = false;
-                    });
         }
 
         private ChargingFrameData GetCurrentChargingState(ChargingFrameData lastData, float frameTime, bool currentlyCharging)
         {
-            switch (lastData.ChargingState)
-            {
-                case ChargingState.StartCharging:
-                case ChargingState.ContinueCharging:
-                    return currentlyCharging
-                        ? ChargingFrameData.ContinueCharging(frameTime + lastData.ChargingTime)
-                        : ChargingFrameData.StopCharging(lastData.ChargingTime);
-
-                case ChargingState.NotCharging:
-                case ChargingState.StopCharging:
-                    return currentlyCharging
-                        ? ChargingFrameData.StartCharging(frameTime)
-                        : ChargingFrameData.NotCharging();
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(lastData.ChargingState), lastData.ChargingState, null);
-            }
+            throw new NotImplementedException();
         }
         
         private void PlayChargingAudio()
         {
-            _chargingAudio.Play();
         }
 
         private void StopChargingAudio()
         {
-            _chargingAudio.Stop();
         }
     }
 }

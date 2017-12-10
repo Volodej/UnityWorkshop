@@ -22,30 +22,15 @@ namespace UnitScripts
 
         private void Awake()
         {
-            _health = new BehaviorSubject<float>(_startingHealth);
-            _health.DoOnCompleted(OnDeath);
-            _health.Subscribe(_ => { }, OnDeath);
-            HealthPercentageStream = _health.Select(currentHealth => currentHealth / _startingHealth);
         }
 
         public void ApplyDamage(float amount)
         {
             // Calculate new health (not less than 0)
-            var newHealth = _health.Value - amount;
-            _health.OnNext(Mathf.Max(0, newHealth));
-
-            if (!(newHealth <= 0))
-                return;
-
-            _health.OnCompleted();
         }
 
         private void OnDeath()
         {
-            _deathExplosion.Activate();
-            GetComponentsInChildren<MeshRenderer>().Slinq()
-                .Select(meshRenderer => meshRenderer.material)
-                .ForEach(material => material.color = material.color * _deathColorFogging);
         }
     }
 }

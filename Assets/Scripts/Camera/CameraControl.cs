@@ -1,7 +1,7 @@
-﻿namespace CameraManagement
-{
-    using UnityEngine;
+﻿using UnityEngine;
 
+namespace Camera
+{
     public class CameraControl : MonoBehaviour
     {
         [SerializeField] private float _velocityDampTime = 0.3f;    // Approximate time for the camera to refocus position.
@@ -11,13 +11,13 @@
         [SerializeField] private float _maxSize = 15;               // Maximum size of the camera
         [SerializeField] private float _maximalZoomDistance = 3;    // Distance from the camera to the target on which zoom will be of maximum value
 
-        private Camera _camera;                                     // Used for referencing the camera.
+        private UnityEngine.Camera _camera;                                     // Used for referencing the camera.
         private Vector3 _moveVelocity;                              // Reference velocity for the smooth damping of the position.
         private float _zoomSpeed;                                   // Reference speed for the smooth damping of the zoom.
 
         private void Awake()
         {
-            _camera = GetComponentInChildren<Camera>();
+            _camera = GetComponentInChildren<UnityEngine.Camera>();
         }
 
 

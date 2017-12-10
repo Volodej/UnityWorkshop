@@ -12,10 +12,6 @@ namespace UnitScripts
         {
             // Create an instance of the shell and 
             // set the shell's velocity to the launch force in the fire position's forward direction.
-            var shellInstance = Instantiate(_shell, _fireTransform.position, _fireTransform.rotation);
-            shellInstance.velocity = force * _fireTransform.forward;
-
-            _shootingAudio.Play();
         }
     }
 }

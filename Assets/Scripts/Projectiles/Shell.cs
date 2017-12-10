@@ -18,24 +18,14 @@ namespace Projectiles
 
         private void Start()
         {
-            Destroy(gameObject, _maxLifeTime);
         }
         
         private void OnTriggerEnter(Collider other)
         {
-            var hitUnit = other.GetComponent<UnitHealth>();
-            if (hitUnit != null)
-                ApplyHitToUnit(hitUnit);
-
-            _explosion.Activate();
-            ShellHit();
-
-            Destroy(gameObject);
         }
 
         private void ApplyHitToUnit(UnitHealth targetHealth)
         {
-            targetHealth.ApplyDamage(_hitDamage);
         }
     }
 }

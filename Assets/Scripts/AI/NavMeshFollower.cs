@@ -25,19 +25,6 @@ namespace AI
 
         private void Start()
         {
-            _tankMover = GetComponent<TankMover>();
-            _playerTransform = FindObjectOfType<PlayerInput>().transform;
-            var updatePositionSubscription = AIHelper.GetTimerStreamWithRandomStart(_positionUpdateFrequency)
-                .Subscribe(_ => _navMeshAgent.destination = GetRandomPosition());
-            GetComponent<UnitHealth>().HealthPercentageStream.Subscribe(_ => { }, () =>
-            {
-                Destroy(_navMeshAgent.gameObject);
-                enabled = false;
-                updatePositionSubscription.Dispose();
-            });
-            _navMeshAgent.speed = _tankMover.MovementSpeed;
-            
-            gameObject.OnDestroyAsObservable().Subscribe(_ => updatePositionSubscription.Dispose());
         }
 
         private void Update()
@@ -48,36 +35,15 @@ namespace AI
 
         private void Rotate()
         {
-            var forwardVector = transform.rotation * Vector3.forward;
-            var directionVector = (TargetVector - transform.position).normalized;
-
-            var angle = AIHelper.GetRotationAngle(forwardVector, directionVector);
-            
-            var turnFactor = Mathf.Abs(angle) > _rotationThreshold ? Mathf.Sign(angle) : 0;
-            _tankMover.Turn(turnFactor);
         }
 
         private void Move()
         {
-            var moveVector = TargetVector - transform.position;
-            var localMoveVector = Quaternion.Inverse(transform.rotation) * moveVector;
-            var forwardMovement = localMoveVector.z;
-
-            var speedFactor = Mathf.Clamp(forwardMovement / _tankMover.MovementSpeed, -1, 1);
-            var resultSpeedFactor = Mathf.Abs(forwardMovement) > _movementThreshold ? speedFactor : 0;
-
-            _tankMover.Move(resultSpeedFactor);
         }
 
         private Vector3 GetRandomPosition()
         {
-            var randomPoint = new Vector3(GetRandomAxes(), 0, GetRandomAxes());
-            var randomPosition = _playerTransform.position + randomPoint;
-            
-            NavMeshHit navMeshHit;
-            var found = NavMesh.SamplePosition(randomPosition, out navMeshHit, _radiusAroundPlayer, ~0);
-            
-            return !found ? GetRandomPosition() : navMeshHit.position;
+            throw new NotImplementedException();
         }
     }
 }

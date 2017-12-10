@@ -19,25 +19,18 @@ namespace UnitScripts
 
         public void Aim(float targetFactor)
         {
-            _currentAimFactor = targetFactor;
         }
 
         private void Update()
         {
-            var turn = _currentAimFactor * _aimSpeed * Time.deltaTime;
-            var turnRotation = Quaternion.Euler(0f, turn, 0f);
-            _aimModule.localRotation = _aimModule.localRotation * turnRotation;
-            _currentRotation.Value = _aimModule.localRotation.eulerAngles.y;
         }
 
         private void Awake()
         {
-            _currentRotation = new ReactiveProperty<float>(_aimModule.localRotation.eulerAngles.y);
         }
 
         private void Start()
         {
-            GetComponent<UnitHealth>().HealthPercentageStream.Subscribe(_ => { }, () => enabled = false);
         }
     }
 }

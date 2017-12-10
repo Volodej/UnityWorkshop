@@ -1,4 +1,5 @@
-﻿using Smooth.Algebraics;
+﻿using System;
+using Smooth.Algebraics;
 using Smooth.Slinq;
 using UnitScripts;
 using UnityEngine;
@@ -19,43 +20,23 @@ namespace Projectiles
 
         private void Start()
         {
-            GetComponent<Shell>().ShellHit += CreateSplash;
         }
         
         private void CreateSplash()
         {
-            var explosionObjects = Physics.OverlapSphere(transform.position, _explosionRadius, _explosionMask);
-            explosionObjects.Slinq()
-                .Select(c => c.GetComponent<Rigidbody>())
-                .Where(r => r != null)
-                .ForEach(ApplyForce);
-
-            explosionObjects.Slinq()
-                .SelectMany(c => c.GetComponent<UnitHealth>().ToOption())
-                .ForEach(ApplySplashToUnit);
         }
 
         private void ApplyForce(Rigidbody targetRigidbody)
         {
-            targetRigidbody.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
         }
 
         private void ApplySplashToUnit(UnitHealth targetHealth)
         {
-            var damage = CalculateDamage(targetHealth.transform.position);
-            targetHealth.ApplyDamage(damage);
         }
 
         private float CalculateDamage(Vector3 targetPosition)
         {
-            // Calculate the distance from the shell to the target.
-            var explosionToTarget = targetPosition - transform.position;
-            var explosionDistance = explosionToTarget.magnitude;
-
-            // Calculate the proportion of the maximum distance (the explosionRadius) the target is away (not less than 0).
-            var relativeDistance = (_explosionRadius - explosionDistance) / _explosionRadius;
-            var damage = Mathf.Max(0f, relativeDistance * _maxSplashDamage);
-            return damage;
+            throw new NotImplementedException();
         }
     }
 }
