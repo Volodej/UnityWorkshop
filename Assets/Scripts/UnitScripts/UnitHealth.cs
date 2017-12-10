@@ -9,7 +9,8 @@ namespace UnitScripts
     {
         #region Prepared
 
-        public UniRx.IObservable<float> HealthPercentageStream { get; private set; }
+        public IObservable<float> HealthPercentageStream { get; private set; }
+        public bool IsAlive => _health.Value > 0;
 
         private BehaviorSubject<float> _health;
 

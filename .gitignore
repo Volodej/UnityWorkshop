@@ -5,3 +5,5 @@ UnityWorkshop.Plugins.csproj
 Library/
 .vs/
 Temp/
+.idea/
+obj/
